@@ -1,19 +1,30 @@
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
+/* Root variables for light and dark modes */
 :root {
     --primary-text-color: #183b56;
     --secondary-text-color: #577592;
     --accent-color: #2294ed;
     --accent-color-dark: #1d69a3;
+    --background-color: #f5f7fa;
+    --card-background: #fff;
+    --nav-background: #f3faff;
+}
+
+/* Dark mode overrides */
+body.dark-mode {
+    --primary-text-color: #e1e8f0;
+    --secondary-text-color: #a0aec0;
+    --accent-color: #90cdf4;
+    --accent-color-dark: #63b3ed;
+    --background-color: #121212;
+    --card-background: #1f2937;
+    --nav-background: #1e293b;
 }
 
 body {
     font-family: "Poppins", sans-serif;
     color: var(--primary-text-color);
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 p {
@@ -38,16 +49,18 @@ ul {
     max-width: 1180px;
     margin-inline: auto;
     overflow: hidden;
+    padding: 0 1rem;
 }
 
 nav {
-    background-color: #f3faff;
-    box-shadow: 0 0 4px #bbd0e2;
+    background-color: var(--nav-background);
+    box-shadow: 0 0 6px #bbd0e2;
     position: fixed;
     top: 0;
     z-index: 99;
     left: 0;
     right: 0;
+    transition: background-color 0.3s ease;
 }
 
 .main-nav {
@@ -65,14 +78,11 @@ nav {
 
 .hover-link {
     cursor: pointer;
+    transition: color 0.3s ease;
 }
 
 .hover-link:hover {
     color: var(--secondary-text-color);
-}
-
-.hover-link:active {
-    color: red;
 }
 
 .nav-item.active {
@@ -80,7 +90,7 @@ nav {
 }
 
 .search-bar {
-    height: 32px;
+    height: 36px;
     gap: 8px;
 }
 
@@ -90,6 +100,12 @@ nav {
     padding-inline: 12px;
     border-radius: 4px;
     border: 2px solid #bbd0e2;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+}
+
+.news-input:focus {
+    border-color: var(--accent-color);
 }
 
 .search-button {
@@ -99,15 +115,67 @@ nav {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .search-button:hover {
     background-color: var(--accent-color-dark);
 }
 
+/* Dark Mode Toggle Button */
+#dark-mode-toggle {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--accent-color);
+    margin-left: 1rem;
+    transition: color 0.3s ease;
+}
+
+#dark-mode-toggle:hover {
+    color: var(--accent-color-dark);
+}
+
 main {
     padding-block: 20px;
     margin-top: 80px;
+}
+
+.filters {
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-bottom: 20px;
+}
+
+.filters select,
+.filters input[type="date"] {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 2px solid #bbd0e2;
+    background-color: var(--card-background);
+    color: var(--primary-text-color);
+    transition: border-color 0.3s ease;
+}
+
+.filters select:focus,
+.filters input[type="date"]:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.filters button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 6px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filters button:hover {
+    background-color: var(--accent-color-dark);
 }
 
 .cards-container {
@@ -120,18 +188,22 @@ main {
 .card {
     width: 360px;
     min-height: 400px;
-    box-shadow: 0 0 4px #d4ecff;
-    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(36, 103, 179, 0.15);
+    border-radius: 8px;
     cursor: pointer;
-    background-color: #fff;
+    background-color: var(--card-background);
     overflow: hidden;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
-.card:hover {
-    box-shadow: 1px 1px 8px #d4ecff;
-    background-color: #f9fdff;
-    transform: translate(-2px);
+.card:hover,
+.card:focus {
+    box-shadow: 0 6px 18px rgba(36, 103, 179, 0.3);
+    background-color: var(--background-color);
+    transform: translateY(-5px) scale(1.02);
+    outline: none;
 }
 
 .card-header img {
@@ -141,9 +213,89 @@ main {
 }
 
 .card-content {
-    padding: 12px;
+    padding: 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .news-source {
     margin-block: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+    margin-top: auto;
+}
+
+/* Loader Styles */
+.loader {
+    display: none;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid var(--accent-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.9s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.load-more-container {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#load-more-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#load-more-btn:hover {
+    background-color: var(--accent-color-dark);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .cards-container {
+        justify-content: center;
+    }
+
+    .card {
+        width: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    nav .nav-links {
+        display: none;
+    }
+
+    .company-logo img {
+        width: 90px;
+    }
+
+    .cards-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 95vw;
+        max-width: 400px;
+    }
 }
